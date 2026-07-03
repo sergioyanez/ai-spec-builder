@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(mkdir -p /tmp/ai_spec_backup)",
+      "Bash(mv CLAUDE.md project-spec.md /tmp/ai_spec_backup/)",
+      "Bash(npm install *)",
+      "Bash(google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/claude-1000/-home-sergio-proyectos-ai-spec-builder/37478278-94a5-49ef-948c-b3e569a83669/scratchpad/spec-output-1.png --window-size=800,3000 http://localhost:3000/preview-spec-output)",
+      "Bash(python3 *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(pkill -f \"next dev\")"
+    ]
+  }
+}
