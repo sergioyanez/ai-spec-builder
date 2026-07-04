@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Spec } from "@/lib/types";
 
-const MAX_CHARS = 500;
+const MAX_CHARS = 1000;
 
 interface SpecFormProps {
   onResult: (spec: Spec) => void;

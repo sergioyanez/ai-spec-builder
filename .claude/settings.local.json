@@ -9,7 +9,10 @@
       "Bash(python3 *)",
       "Bash(npx tsc *)",
       "Bash(npm run *)",
-      "Bash(pkill -f \"next dev\")"
+      "Bash(pkill -f \"next dev\")",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ]
   }
 }
