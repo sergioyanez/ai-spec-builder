@@ -33,3 +33,12 @@ export interface Spec {
   architecture: SpecArchitecture;
   requirements: SpecRequirements;
 }
+
+export interface SavedSpec {
+  id: string;
+  name: string;
+  idea: string;
+  createdAt: string;
+  updatedAt: string;
+  spec: Spec;
+}

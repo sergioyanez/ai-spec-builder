@@ -6,7 +6,7 @@ import type { Spec } from "@/lib/types";
 const MAX_CHARS = 1000;
 
 interface SpecFormProps {
-  onResult: (spec: Spec) => void;
+  onResult: (spec: Spec, idea: string) => void;
 }
 
 function getLengthHint(length: number): { text: string; className: string } | null {
@@ -85,7 +85,7 @@ export default function SpecForm({ onResult }: SpecFormProps) {
           setStreamedChars(charCount);
         } else if (frame.type === "done" && frame.spec) {
           settled = true;
-          onResult(frame.spec);
+          onResult(frame.spec, idea.trim());
         } else if (frame.type === "error") {
           settled = true;
           setError(
