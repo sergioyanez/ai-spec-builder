@@ -24,7 +24,17 @@
       "Bash(cp /tmp/clean-test.ts ./clean-test.ts)",
       "Bash(git reset *)",
       "Bash(bash scripts/git-hooks/pre-commit)",
-      "Bash(echo \"EXIT: $?\")"
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(curl -s -i -X POST http://localhost:3000/api/generate-spec -H 'Content-Type: application/json' -H 'X-Forwarded-For: 198.51.100.7' -d '{}')",
+      "Bash(pkill -f \"npm run dev\")",
+      "Bash(curl -s -i -X POST http://localhost:3000/api/generate-spec -H 'Content-Type: application/json' -H 'X-Forwarded-For: 10.0.0.3' -d '{\"description\": \"__TRACKED_VAR__\"}')",
+      "Bash(curl -s -i -X POST http://localhost:3000/api/generate-spec -H 'Content-Type: application/json' -H 'X-Forwarded-For: 10.0.0.4' -d '{\"description\": \"__TRACKED_VAR__\"}')",
+      "Read(//tmp/**)",
+      "Bash(curl -s -i -X POST http://localhost:3000/api/generate-spec -H 'Content-Type: application/json' -H 'X-Forwarded-For: 10.0.0.5' --data @/tmp/payload.json)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -i -X POST http://localhost:3000/api/generate-spec -H 'Content-Type: application/json' -H 'X-Forwarded-For: 10.1.1.1' --data @/tmp/injection_payload.json)",
+      "Bash(sed -n '/^function isNonEmptyString/,/^}/p; /^function isStringArray/,/^}/p; /^function isValidUser/,/^}/p; /^function isValidFeatureGroup/,/^}/p; /^function isValidFlow/,/^}/p; /^function isValidArchitecture/,/^}/p; /^function isValidRequirements/,/^}/p; /^function isValidSpec/,/^}/p' app/api/generate-spec/route.ts)",
+      "Bash(node -e ' *)"
     ]
   }
 }
