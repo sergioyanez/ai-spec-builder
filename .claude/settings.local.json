@@ -12,7 +12,19 @@
       "Bash(pkill -f \"next dev\")",
       "Bash(git remote *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(sh scripts/setup-hooks.sh)",
+      "Bash(git config *)",
+      "Bash(echo 'const key = process.env.ANTHROPIC_API_KEY;')",
+      "Bash(cp /tmp/secret-test.ts ./secret-test.ts)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(echo '// just a comment')",
+      "Bash(cp /tmp/clean-test.ts ./clean-test.ts)",
+      "Bash(git reset *)",
+      "Bash(bash scripts/git-hooks/pre-commit)",
+      "Bash(echo \"EXIT: $?\")"
     ]
   }
 }
