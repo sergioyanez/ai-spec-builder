@@ -182,17 +182,17 @@ function Section({ id, icon, title, open, onToggle, children }: SectionProps) {
           <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
         </span>
         <ChevronDownIcon
-          className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform ${
+          className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform print:hidden ${
             open ? "rotate-180" : ""
           }`}
         />
       </button>
       <div
-        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+        className={`grid transition-[grid-template-rows] duration-300 ease-in-out print:grid-rows-[1fr] ${
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >
-        <div className="overflow-hidden">{children}</div>
+        <div className="overflow-hidden print:overflow-visible">{children}</div>
       </div>
     </div>
   );
@@ -357,9 +357,24 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
     );
   }
 
+  function handleDownloadPdf() {
+    // The browser uses document.title as the default "Save as PDF" filename.
+    const previousTitle = document.title;
+    document.title = "especificacion-tecnica";
+    const restore = () => {
+      document.title = previousTitle;
+      window.removeEventListener("afterprint", restore);
+    };
+    window.addEventListener("afterprint", restore);
+    window.print();
+  }
+
   return (
     <section className="motion-reduce:animate-none animate-[fade-in-up_0.4s_ease-out] space-y-6">
-      <div className="flex items-center justify-between">
+      <h1 className="hidden text-2xl font-bold tracking-tight text-zinc-900 print:block">
+        Especificación técnica
+      </h1>
+      <div className="flex items-center justify-between print:hidden">
         <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
           Especificación generada
         </p>
@@ -373,11 +388,11 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         </button>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-700 via-indigo-900 to-zinc-900 p-8 text-white shadow-lg">
-        <span className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-        <span className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-2xl" />
-        <div className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-indigo-200">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-700 via-indigo-900 to-zinc-900 p-8 text-white shadow-lg print:break-inside-avoid print:border print:border-zinc-300 print:bg-none print:text-zinc-900 print:shadow-none">
+        <span className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl print:hidden" />
+        <span className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-2xl print:hidden" />
+        <div className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-indigo-200 print:text-indigo-700">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 print:hidden">
             <SparklesIcon className="h-4 w-4" />
           </span>
           Visión del producto
@@ -385,7 +400,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         <p className="relative mt-4 text-lg leading-relaxed">{spec.vision}</p>
       </div>
 
-      <nav className="flex flex-wrap gap-2">
+      <nav className="flex flex-wrap gap-2 print:hidden">
         {TOC.map((item) => (
           <a
             key={item.id}
@@ -410,7 +425,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
       >
         <div className="grid gap-3 pt-1 sm:grid-cols-2">
           {spec.users.map((user) => (
-            <div key={user.type} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+            <div key={user.type} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm print:break-inside-avoid">
               <p className="text-sm font-semibold text-zinc-900">{user.type}</p>
               <p className="mt-1 text-sm text-zinc-600">{user.description}</p>
               <ul className="mt-3 space-y-1.5">
@@ -433,7 +448,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         open={openSections.funcionalidades}
         onToggle={() => toggleSection("funcionalidades")}
       >
-        <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm print:break-inside-avoid">
           {spec.features.map((group) => (
             <div key={group.area}>
               <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
@@ -461,7 +476,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
       >
         <div className="space-y-3 pt-1">
           {spec.flows.map((flow, i) => (
-            <div key={flow.name} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+            <div key={flow.name} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm print:break-inside-avoid">
               <p className="text-sm font-semibold text-zinc-900">
                 {i + 1}. {flow.name}
               </p>
@@ -476,7 +491,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
                   return (
                     <li key={step} className="flex gap-3">
                       <div className="flex flex-col items-center">
-                        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">
+                        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white print:border print:border-emerald-600 print:bg-white print:text-emerald-700">
                           {j + 1}
                         </span>
                         {!isLast && <span className="my-1 w-px flex-1 bg-emerald-200" />}
@@ -507,7 +522,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         open={openSections.arquitectura}
         onToggle={() => toggleSection("arquitectura")}
       >
-        <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm print:break-inside-avoid">
           <div className="flex flex-wrap gap-2">
             {spec.architecture.technologies.map((tech) => {
               const separatorIndex = tech.indexOf(":");
@@ -536,7 +551,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         onToggle={() => toggleSection("requisitos")}
       >
         <div className="grid gap-3 pt-1 sm:grid-cols-2">
-          <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+          <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 print:break-inside-avoid">
             <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
               Incluido en el MVP
             </p>
@@ -549,7 +564,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
               ))}
             </ul>
           </div>
-          <div className="rounded-xl border border-red-100 bg-red-50/60 p-4">
+          <div className="rounded-xl border border-red-100 bg-red-50/60 p-4 print:break-inside-avoid">
             <p className="text-xs font-semibold uppercase tracking-wide text-red-700">
               Fuera de alcance
             </p>
@@ -565,11 +580,11 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         </div>
       </Section>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="space-y-3 print:hidden">
         <button
           type="button"
           onClick={handleCopy}
-          className={`flex w-full items-center justify-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold shadow-sm transition-colors sm:flex-1 ${
+          className={`flex w-full items-center justify-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold shadow-sm transition-colors ${
             copied
               ? "border-emerald-300 bg-emerald-50 text-emerald-700"
               : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400"
@@ -583,23 +598,34 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
           {copied ? "¡Copiado en el portapapeles!" : "Copiar especificación completa"}
         </button>
 
-        <button
-          type="button"
-          onClick={handleDownloadTxt}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
-        >
-          <DownloadIcon className="h-4 w-4" />
-          Descargar como .txt
-        </button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={handleDownloadTxt}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
+          >
+            <DownloadIcon className="h-4 w-4" />
+            Descargar como .txt
+          </button>
 
-        <button
-          type="button"
-          onClick={handleDownloadMd}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
-        >
-          <DownloadIcon className="h-4 w-4" />
-          Descargar como .md
-        </button>
+          <button
+            type="button"
+            onClick={handleDownloadMd}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
+          >
+            <DownloadIcon className="h-4 w-4" />
+            Descargar como .md
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDownloadPdf}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
+          >
+            <DownloadIcon className="h-4 w-4" />
+            Descargar como PDF
+          </button>
+        </div>
       </div>
     </section>
   );

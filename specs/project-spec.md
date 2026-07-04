@@ -235,3 +235,9 @@ Las restricciones que el sistema debe cumplir aunque el usuario no las vea direc
 ---
 
 *¿Quieres aprender a usar esta plantilla en un proyecto real de principio a fin? El curso **Construye con IA: De la Idea al Producto con Claude y Specs** estará disponible en Udemy.*
+
+---
+
+### Features
+        Exportar como Markdown
+        Exportar como PDF

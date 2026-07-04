@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white px-4 py-12">
       <div className="mx-auto max-w-3xl space-y-8">
-        <header className="space-y-2">
+        <header className="space-y-2 print:hidden">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
             AI Spec Builder
           </h1>
@@ -29,7 +29,7 @@ export default function Home() {
           </p>
         </header>
 
-        <div ref={formRef}>
+        <div ref={formRef} className="print:hidden">
           <SpecForm key={formKey} onResult={setSpec} />
         </div>
 
