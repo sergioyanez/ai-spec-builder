@@ -251,6 +251,47 @@ Fuera de alcance:
 ${excluded}`;
 }
 
+function specToMarkdown(spec: Spec): string {
+  const lines: string[] = [];
+
+  lines.push("# Especificación técnica", "");
+
+  lines.push("## Visión del producto", "", spec.vision, "");
+
+  lines.push("## Usuarios y casos de uso", "");
+  spec.users.forEach((user) => {
+    lines.push(`### ${user.type}`, "", user.description, "");
+    user.use_cases.forEach((useCase) => lines.push(`- ${useCase}`));
+    lines.push("");
+  });
+
+  lines.push("## Funcionalidades", "");
+  spec.features.forEach((group) => {
+    lines.push(`### ${group.area}`, "");
+    group.items.forEach((item) => lines.push(`- ${item}`));
+    lines.push("");
+  });
+
+  lines.push("## Flujos de usuario", "");
+  spec.flows.forEach((flow, i) => {
+    lines.push(`### ${i + 1}. ${flow.name}`, "");
+    flow.steps.forEach((step, j) => lines.push(`${j + 1}. ${step}`));
+    lines.push("", `> **Flujo de error:** ${flow.error_path}`, "");
+  });
+
+  lines.push("## Arquitectura", "", "### Tecnologías", "");
+  spec.architecture.technologies.forEach((tech) => lines.push(`- ${tech}`));
+  lines.push("", "### Flujo de datos", "", spec.architecture.data_flow, "");
+
+  lines.push("## Requisitos", "", "### Incluido en el MVP", "");
+  spec.requirements.included.forEach((item) => lines.push(`- [ ] ${item}`));
+  lines.push("", "### Fuera de alcance", "");
+  spec.requirements.excluded.forEach((item) => lines.push(`- ${item}`));
+  lines.push("");
+
+  return lines.join("\n");
+}
+
 const TOC = [
   { id: "usuarios", label: "Usuarios" },
   { id: "funcionalidades", label: "Funcionalidades" },
@@ -288,18 +329,32 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  function handleDownload() {
-    const blob = new Blob([specToText(spec as Spec)], {
-      type: "text/plain;charset=utf-8",
-    });
+  function download(content: string, filename: string, mime: string) {
+    const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "especificacion-tecnica.txt";
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  }
+
+  function handleDownloadTxt() {
+    download(
+      specToText(spec as Spec),
+      "especificacion-tecnica.txt",
+      "text/plain;charset=utf-8",
+    );
+  }
+
+  function handleDownloadMd() {
+    download(
+      specToMarkdown(spec as Spec),
+      "especificacion-tecnica.md",
+      "text/markdown;charset=utf-8",
+    );
   }
 
   return (
@@ -530,11 +585,20 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
 
         <button
           type="button"
-          onClick={handleDownload}
+          onClick={handleDownloadTxt}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
         >
           <DownloadIcon className="h-4 w-4" />
           Descargar como .txt
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDownloadMd}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-colors hover:border-zinc-400 sm:flex-1"
+        >
+          <DownloadIcon className="h-4 w-4" />
+          Descargar como .md
         </button>
       </div>
     </section>
