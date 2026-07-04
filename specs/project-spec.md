@@ -241,3 +241,4 @@ Las restricciones que el sistema debe cumplir aunque el usuario no las vea direc
 ### Features
         Exportar como Markdown
         Exportar como PDF
+        Streaming en la respuesta

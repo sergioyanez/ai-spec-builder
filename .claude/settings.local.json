@@ -34,7 +34,9 @@
       "Bash(python3 -c ' *)",
       "Bash(curl -s -i -X POST http://localhost:3000/api/generate-spec -H 'Content-Type: application/json' -H 'X-Forwarded-For: 10.1.1.1' --data @/tmp/injection_payload.json)",
       "Bash(sed -n '/^function isNonEmptyString/,/^}/p; /^function isStringArray/,/^}/p; /^function isValidUser/,/^}/p; /^function isValidFeatureGroup/,/^}/p; /^function isValidFlow/,/^}/p; /^function isValidArchitecture/,/^}/p; /^function isValidRequirements/,/^}/p; /^function isValidSpec/,/^}/p' app/api/generate-spec/route.ts)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)"
     ]
   }
 }

@@ -30,6 +30,7 @@ export default function SpecForm({ onResult }: SpecFormProps) {
   const [idea, setIdea] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [streamedChars, setStreamedChars] = useState(0);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,23 +42,78 @@ export default function SpecForm({ onResult }: SpecFormProps) {
     }
 
     setLoading(true);
+    setStreamedChars(0);
     try {
       const res = await fetch("/api/generate-spec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ description: idea.trim() }),
       });
-      const data = await res.json();
 
-      if (!res.ok) {
-        setError(
-          data.error ||
-            "Hubo un error al generar la especificación. Intentá de nuevo."
-        );
+      // Pre-stream failures (rate limit, validation) come back as JSON, not a stream.
+      if (!res.ok || !res.body) {
+        let message =
+          "Hubo un error al generar la especificación. Intentá de nuevo.";
+        try {
+          const data = await res.json();
+          if (data?.error) message = data.error;
+        } catch {
+          // keep the default message
+        }
+        setError(message);
         return;
       }
 
-      onResult(data.spec as Spec);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let charCount = 0;
+      let settled = false;
+
+      const handleFrame = (line: string) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        let frame: { type: string; text?: string; spec?: Spec; error?: string };
+        try {
+          frame = JSON.parse(trimmed);
+        } catch {
+          return;
+        }
+
+        if (frame.type === "delta" && frame.text) {
+          charCount += frame.text.length;
+          setStreamedChars(charCount);
+        } else if (frame.type === "done" && frame.spec) {
+          settled = true;
+          onResult(frame.spec);
+        } else if (frame.type === "error") {
+          settled = true;
+          setError(
+            frame.error ||
+              "Hubo un error al generar la especificación. Intentá de nuevo."
+          );
+        }
+      };
+
+      // Read the newline-delimited JSON stream frame by frame.
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let newlineIndex: number;
+        while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
+          const line = buffer.slice(0, newlineIndex);
+          buffer = buffer.slice(newlineIndex + 1);
+          handleFrame(line);
+        }
+      }
+      if (buffer.trim()) handleFrame(buffer);
+
+      if (!settled) {
+        setError(
+          "La conexión se interrumpió antes de terminar. Intentá de nuevo."
+        );
+      }
     } catch {
       setError("Hubo un error al generar la especificación. Intentá de nuevo.");
     } finally {
@@ -107,9 +163,34 @@ export default function SpecForm({ onResult }: SpecFormProps) {
               aria-hidden="true"
             />
           )}
-          {loading ? "Generando..." : "Generar especificación"}
+          {loading
+            ? streamedChars > 0
+              ? "Escribiendo tu especificación..."
+              : "Generando..."
+            : "Generar especificación"}
         </button>
       </form>
+
+      {loading && (
+        <div
+          className="flex items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3 text-sm text-indigo-700"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="flex gap-1" aria-hidden="true">
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:-0.3s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:-0.15s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400" />
+          </span>
+          <span>
+            {streamedChars > 0
+              ? `La IA está redactando tu especificación (${streamedChars.toLocaleString(
+                  "es"
+                )} caracteres y sumando)...`
+              : "Conectando con la IA y preparando tu especificación..."}
+          </span>
+        </div>
+      )}
 
       {error && (
         <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
