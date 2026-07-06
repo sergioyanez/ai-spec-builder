@@ -36,7 +36,9 @@
       "Bash(sed -n '/^function isNonEmptyString/,/^}/p; /^function isStringArray/,/^}/p; /^function isValidUser/,/^}/p; /^function isValidFeatureGroup/,/^}/p; /^function isValidFlow/,/^}/p; /^function isValidArchitecture/,/^}/p; /^function isValidRequirements/,/^}/p; /^function isValidSpec/,/^}/p' app/api/generate-spec/route.ts)",
       "Bash(node -e ' *)",
       "Skill(claude-api)",
-      "Skill(claude-api:*)"
+      "Skill(claude-api:*)",
+      "Bash(clerk config *)",
+      "Bash(echo \"exit=$?\")"
     ]
   }
 }

@@ -1,3 +1,10 @@
+import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -28,7 +35,33 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ClerkProvider>
+          <header className="flex items-center justify-between gap-4 border-b border-black/10 px-4 py-3 sm:px-6">
+            <span className="text-sm font-semibold tracking-tight">
+              AI Spec Builder
+            </span>
+            <nav className="flex items-center gap-3">
+              <Show when="signed-out">
+                <SignInButton mode="modal">
+                  <button className="text-sm font-medium text-black/70 hover:text-black">
+                    Iniciar sesión
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white hover:bg-black/80">
+                    Registrarse
+                  </button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </nav>
+          </header>
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }

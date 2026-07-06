@@ -243,3 +243,4 @@ Las restricciones que el sistema debe cumplir aunque el usuario no las vea direc
         Exportar como PDF
         Streaming en la respuesta
         Historial de specs generadas
+        Login con Clerk
