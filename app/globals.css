@@ -12,6 +12,20 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Warm brand palette (landing + header) */
+@theme {
+  --color-canvas: #fdf8f3; /* main / card background */
+  --color-hero-start: #fbeee0; /* hero gradient top */
+  --color-hero-end: #f7dcc4; /* hero gradient bottom */
+  --color-ink: #2b2118; /* primary text */
+  --color-muted: #8a7361; /* secondary text */
+  --color-accent: #c4622d; /* buttons / links */
+  --color-accent-hover: #a84f22; /* accent hover */
+  --color-sage: #7a9b76; /* secondary accent (badges/details) */
+  --color-card-border: #ede0d3; /* card borders */
+  --shadow-card: 0 1px 3px 0 rgba(196, 98, 45, 0.08); /* card shadow */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

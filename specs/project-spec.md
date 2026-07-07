@@ -244,3 +244,4 @@ Las restricciones que el sistema debe cumplir aunque el usuario no las vea direc
         Streaming en la respuesta
         Historial de specs generadas
         Login con Clerk
+        HomePage publica 
