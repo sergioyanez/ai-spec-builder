@@ -142,14 +142,14 @@ function RefreshIcon(props: SVGProps<SVGSVGElement>) {
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-indigo-200 bg-white/60 px-6 py-16 text-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+    <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-card-border bg-white/60 px-6 py-16 text-center">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-hero-start text-accent">
         <SparklesIcon className="h-6 w-6" />
       </span>
-      <p className="text-sm font-semibold text-zinc-700">
+      <p className="text-sm font-semibold text-ink">
         Tu especificación técnica está a un paso
       </p>
-      <p className="max-w-sm text-sm text-zinc-500">
+      <p className="max-w-sm text-sm text-muted">
         Contanos tu idea arriba y en segundos vas a tener un documento
         completo, listo para compartir con cualquier desarrollador.
       </p>
@@ -176,10 +176,10 @@ function Section({ id, icon, title, open, onToggle, children }: SectionProps) {
         className="flex w-full items-center justify-between gap-2 text-left"
       >
         <span className="flex items-center gap-2">
-          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-white">
+          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-accent text-white">
             {icon}
           </span>
-          <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
+          <h3 className="text-sm font-semibold text-ink">{title}</h3>
         </span>
         <ChevronDownIcon
           className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform print:hidden ${
@@ -375,23 +375,23 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         Especificación técnica
       </h1>
       <div className="flex items-center justify-between print:hidden">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           Especificación generada
         </p>
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-800"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-accent transition-colors hover:text-accent-hover"
         >
           <RefreshIcon className="h-3.5 w-3.5" />
           Probar con otra idea
         </button>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-700 via-indigo-900 to-zinc-900 p-8 text-white shadow-lg print:break-inside-avoid print:border print:border-zinc-300 print:bg-none print:text-zinc-900 print:shadow-none">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent via-accent-hover to-ink p-8 text-white shadow-lg print:break-inside-avoid print:border print:border-zinc-300 print:bg-none print:text-zinc-900 print:shadow-none">
         <span className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl print:hidden" />
-        <span className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-2xl print:hidden" />
-        <div className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-indigo-200 print:text-indigo-700">
+        <span className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-hero-end/25 blur-2xl print:hidden" />
+        <div className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-hero-end print:text-accent">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 print:hidden">
             <SparklesIcon className="h-4 w-4" />
           </span>
@@ -409,7 +409,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
               e.preventDefault();
               goToSection(item.id);
             }}
-            className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600 shadow-sm transition-colors hover:border-indigo-300 hover:text-indigo-700"
+            className="rounded-full border border-card-border bg-white px-3 py-1 text-xs font-medium text-muted shadow-sm transition-colors hover:border-accent/40 hover:text-accent"
           >
             {item.label}
           </a>
@@ -533,7 +533,7 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
                   key={tech}
                   className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700"
                 >
-                  {layer && <span className="font-semibold text-indigo-700">{layer}: </span>}
+                  {layer && <span className="font-semibold text-accent">{layer}: </span>}
                   {label}
                 </span>
               );

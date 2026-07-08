@@ -71,13 +71,13 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white px-4 py-12">
+    <main className="min-h-screen bg-gradient-to-b from-hero-start via-canvas to-canvas px-4 py-12">
       <div className="mx-auto max-w-6xl space-y-8">
         <header className="space-y-2 print:hidden">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+          <h1 className="text-3xl font-bold tracking-tight text-ink">
             AI Spec Builder
           </h1>
-          <p className="text-zinc-500">
+          <p className="text-muted">
             Describí tu producto y recibí al instante un documento técnico
             completo, listo para compartir con cualquier desarrollador.
           </p>

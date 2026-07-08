@@ -134,7 +134,7 @@ export default function SpecForm({ onResult }: SpecFormProps) {
           placeholder="Describe tu idea de producto... Por ejemplo: una app para que freelancers gestionen sus facturas"
           rows={10}
           maxLength={MAX_CHARS}
-          className="w-full resize-none rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm transition-colors focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-400"
+          className="w-full resize-none rounded-xl border border-card-border bg-white px-4 py-3 text-sm text-ink placeholder-muted/70 shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 disabled:cursor-not-allowed disabled:bg-canvas disabled:text-muted"
         />
 
         <div className="flex items-center justify-between text-xs">
@@ -155,11 +155,11 @@ export default function SpecForm({ onResult }: SpecFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading && (
             <span
-              className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-amber-300"
+              className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
               aria-hidden="true"
             />
           )}
@@ -173,14 +173,14 @@ export default function SpecForm({ onResult }: SpecFormProps) {
 
       {loading && (
         <div
-          className="flex items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3 text-sm text-indigo-700"
+          className="flex items-center gap-3 rounded-xl border border-card-border bg-hero-start/60 px-4 py-3 text-sm text-accent"
           role="status"
           aria-live="polite"
         >
           <span className="flex gap-1" aria-hidden="true">
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:-0.3s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:-0.15s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent/60 [animation-delay:-0.3s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent/60 [animation-delay:-0.15s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent/60" />
           </span>
           <span>
             {streamedChars > 0
