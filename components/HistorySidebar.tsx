@@ -102,7 +102,7 @@ function EntryRow({ entry, active, onSelect, onRename, onDelete }: EntryRowProps
 
   if (editing) {
     return (
-      <li className="rounded-lg border border-indigo-300 bg-white p-2 shadow-sm">
+      <li className="rounded-lg border border-accent/40 bg-white p-2 shadow-sm">
         <input
           ref={inputRef}
           value={draft}
@@ -116,7 +116,7 @@ function EntryRow({ entry, active, onSelect, onRename, onDelete }: EntryRowProps
             }
           }}
           maxLength={60}
-          className="w-full rounded-md border border-zinc-200 px-2 py-1 text-sm text-zinc-900 focus:border-indigo-400 focus:outline-none"
+          className="w-full rounded-md border border-card-border px-2 py-1 text-sm text-ink focus:border-accent focus:outline-none"
         />
       </li>
     );
@@ -127,8 +127,8 @@ function EntryRow({ entry, active, onSelect, onRename, onDelete }: EntryRowProps
       <div
         className={`group flex items-start gap-2 rounded-lg border px-3 py-2 transition-colors ${
           active
-            ? "border-indigo-300 bg-indigo-50"
-            : "border-transparent hover:border-zinc-200 hover:bg-white"
+            ? "border-accent/40 bg-hero-start"
+            : "border-transparent hover:border-card-border hover:bg-white"
         }`}
       >
         <button
@@ -139,7 +139,7 @@ function EntryRow({ entry, active, onSelect, onRename, onDelete }: EntryRowProps
         >
           <p
             className={`truncate text-sm font-medium ${
-              active ? "text-indigo-900" : "text-zinc-700"
+              active ? "text-accent" : "text-zinc-700"
             }`}
           >
             {entry.name}
@@ -205,7 +205,7 @@ export default function HistorySidebar({
       <button
         type="button"
         onClick={onNew}
-        className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-indigo-300 bg-white px-3 py-2 text-sm font-medium text-indigo-600 transition-colors hover:border-indigo-400 hover:bg-indigo-50"
+        className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-accent/40 bg-white px-3 py-2 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-hero-start"
       >
         <PlusIcon className="h-4 w-4" />
         Nueva idea
