@@ -108,6 +108,15 @@ function isValidSpec(value: unknown): value is Record<(typeof SPEC_KEYS)[number]
   );
 }
 
+// The "credit balance is too low" failure arrives as a 400 invalid_request_error
+// whose message mentions the credit balance. Match on the message so we can show a
+// clear billing-specific notice instead of leaking the raw API text.
+function isCreditBalanceError(error: unknown): boolean {
+  if (!(error instanceof Anthropic.APIError)) return false;
+  const message = typeof error.message === "string" ? error.message : "";
+  return /credit balance is too low/i.test(message);
+}
+
 function getClientIp(req: NextRequest): string {
   const forwardedFor = req.headers.get("x-forwarded-for");
   if (forwardedFor) {
@@ -253,14 +262,21 @@ export async function POST(req: NextRequest) {
         controller.enqueue(frame({ type: "done", spec }));
       } catch (error) {
         let message =
-          "Ocurrió un error inesperado al generar la especificación.";
-        if (error instanceof Anthropic.AuthenticationError) {
-          message = "Error de autenticación con el servicio de IA.";
+          "Ocurrió un error inesperado al generar la especificación. Intentá de nuevo en unos minutos.";
+        if (isCreditBalanceError(error)) {
+          // The AI service ran out of credits — a billing issue on our side, not
+          // something the user can fix by retrying. Keep it friendly and blame-free.
+          message =
+            "El servicio de IA no está disponible en este momento porque se agotó el saldo de la cuenta. Es un problema temporal de nuestro lado — por favor intentá más tarde o escribinos si el problema persiste.";
+        } else if (error instanceof Anthropic.AuthenticationError) {
+          message =
+            "No pudimos conectar con el servicio de IA. Es un problema de configuración de nuestro lado; por favor intentá más tarde.";
         } else if (error instanceof Anthropic.RateLimitError) {
           message =
-            "El servicio de IA está saturado. Intentá de nuevo en unos segundos.";
+            "El servicio de IA está recibiendo muchas solicitudes en este momento. Esperá unos segundos e intentá de nuevo.";
         } else if (error instanceof Anthropic.APIError) {
-          message = `Error del servicio de IA: ${error.message}`;
+          // Don't leak raw API error text to the user; log it for debugging.
+          console.error("Anthropic API error:", error);
         }
         controller.enqueue(frame({ type: "error", error: message }));
       } finally {

@@ -193,9 +193,29 @@ export default function SpecForm({ onResult }: SpecFormProps) {
       )}
 
       {error && (
-        <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
-        </p>
+        <div
+          role="alert"
+          className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3"
+        >
+          <svg
+            className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM9 5a1 1 0 012 0v5a1 1 0 11-2 0V5zm1 9a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <div className="space-y-0.5">
+            <p className="text-sm font-semibold text-red-800">
+              No pudimos generar tu especificación
+            </p>
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        </div>
       )}
     </div>
   );
