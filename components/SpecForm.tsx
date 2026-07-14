@@ -7,6 +7,7 @@ const MAX_CHARS = 1000;
 
 interface SpecFormProps {
   onResult: (spec: Spec, idea: string) => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 function getLengthHint(length: number): { text: string; className: string } | null {
@@ -26,7 +27,7 @@ function getLengthHint(length: number): { text: string; className: string } | nu
   };
 }
 
-export default function SpecForm({ onResult }: SpecFormProps) {
+export default function SpecForm({ onResult, onLoadingChange }: SpecFormProps) {
   const [idea, setIdea] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,6 +43,7 @@ export default function SpecForm({ onResult }: SpecFormProps) {
     }
 
     setLoading(true);
+    onLoadingChange?.(true);
     setStreamedChars(0);
     try {
       const res = await fetch("/api/generate-spec", {
@@ -118,6 +120,7 @@ export default function SpecForm({ onResult }: SpecFormProps) {
       setError("Hubo un error al generar la especificación. Intentá de nuevo.");
     } finally {
       setLoading(false);
+      onLoadingChange?.(false);
     }
   }
 

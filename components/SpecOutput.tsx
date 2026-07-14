@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, type ReactNode, type SVGProps } from "react";
+import { useEffect, useRef, useState, type ReactNode, type SVGProps } from "react";
 import type { Spec } from "@/lib/types";
 
 interface SpecOutputProps {
   spec: Spec | null;
   onReset: () => void;
+  isGenerating?: boolean;
 }
 
 function SparklesIcon(props: SVGProps<SVGSVGElement>) {
@@ -300,8 +301,10 @@ const TOC = [
   { id: "requisitos", label: "Requisitos" },
 ];
 
-export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
+export default function SpecOutput({ spec, onReset, isGenerating = false }: SpecOutputProps) {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     usuarios: true,
     funcionalidades: true,
@@ -309,6 +312,13 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
     arquitectura: true,
     requisitos: true,
   });
+
+  // Clear any pending "¡Copiado!" revert timer when the component unmounts.
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   if (!spec) {
     return <EmptyState />;
@@ -324,9 +334,19 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
   }
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(specToText(spec as Spec));
+    try {
+      await navigator.clipboard.writeText(specToText(spec as Spec));
+    } catch {
+      // Clipboard access denied or unsupported: never show a false confirmation.
+      setCopied(false);
+      setCopyFailed(true);
+      return;
+    }
+    setCopyFailed(false);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    // Restart a fresh 2s window on each successful copy so rapid clicks don't revert early.
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
   }
 
   function download(content: string, filename: string, mime: string) {
@@ -584,7 +604,8 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
         <button
           type="button"
           onClick={handleCopy}
-          className={`flex w-full items-center justify-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold shadow-sm transition-colors ${
+          disabled={isGenerating}
+          className={`flex w-full items-center justify-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold shadow-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
             copied
               ? "border-emerald-300 bg-emerald-50 text-emerald-700"
               : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400"
@@ -597,6 +618,12 @@ export default function SpecOutput({ spec, onReset }: SpecOutputProps) {
           )}
           {copied ? "¡Copiado en el portapapeles!" : "Copiar especificación completa"}
         </button>
+
+        {copyFailed && (
+          <p role="alert" className="text-center text-sm text-red-600">
+            No pudimos copiar la especificación. Intentá de nuevo.
+          </p>
+        )}
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <button

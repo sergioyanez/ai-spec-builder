@@ -21,6 +21,7 @@ export default function Home() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [formKey, setFormKey] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   // Read the persisted history reactively; server render sees an empty list and
@@ -99,10 +100,19 @@ export default function Home() {
 
           <div className="min-w-0 flex-1 space-y-8">
             <div ref={formRef} className="print:hidden">
-              <SpecForm key={formKey} onResult={handleResult} />
+              <SpecForm
+                key={formKey}
+                onResult={handleResult}
+                onLoadingChange={setIsGenerating}
+              />
             </div>
 
-            <SpecOutput key={activeId ?? "none"} spec={spec} onReset={handleNew} />
+            <SpecOutput
+              key={activeId ?? "none"}
+              spec={spec}
+              onReset={handleNew}
+              isGenerating={isGenerating}
+            />
           </div>
         </div>
       </div>
