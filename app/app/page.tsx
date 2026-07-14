@@ -22,6 +22,8 @@ export default function Home() {
   const [formKey, setFormKey] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  // Session-only count of successful generations; resets on reload (no persistence).
+  const [specCount, setSpecCount] = useState(0);
   const formRef = useRef<HTMLDivElement>(null);
 
   // Read the persisted history reactively; server render sees an empty list and
@@ -40,6 +42,7 @@ export default function Home() {
     });
     setSpec(newSpec);
     setActiveId(entry.id);
+    setSpecCount((n) => n + 1);
   }
 
   function handleSelect(id: string) {
@@ -75,9 +78,14 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-hero-start via-canvas to-canvas px-4 py-12">
       <div className="mx-auto max-w-6xl space-y-8">
         <header className="space-y-2 print:hidden">
-          <h1 className="text-3xl font-bold tracking-tight text-ink">
-            AI Spec Builder
-          </h1>
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-3xl font-bold tracking-tight text-ink">
+              AI Spec Builder
+            </h1>
+            <span className="mt-1 inline-flex shrink-0 items-center rounded-full border border-card-border bg-canvas px-3 py-1 text-sm font-medium text-muted shadow-card">
+              Specs generadas: {specCount}
+            </span>
+          </div>
           <p className="text-muted">
             Describí tu producto y recibí al instante un documento técnico
             completo, listo para compartir con cualquier desarrollador.

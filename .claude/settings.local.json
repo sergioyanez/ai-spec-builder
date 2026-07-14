@@ -38,7 +38,9 @@
       "Skill(claude-api)",
       "Skill(claude-api:*)",
       "Bash(clerk config *)",
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "Skill(opsx:apply)",
+      "Skill(openspec-sync-specs)"
     ]
   }
 }
