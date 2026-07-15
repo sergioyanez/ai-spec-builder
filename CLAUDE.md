@@ -20,27 +20,37 @@ Converts an entrepreneur's idea into a complete technical specification document
 
 ```
 app/
-  page.tsx              # Main input form (client component)
+  page.tsx              # Public landing page
+  app/page.tsx          # Main authenticated app (form + output + history)
   layout.tsx            # Root layout and metadata
   api/
-    generate/
-      route.ts          # POST /api/generate — calls Claude
+    generate-spec/
+      route.ts          # POST /api/generate-spec — streams a spec from Claude
+components/
+  SpecForm.tsx          # Idea textarea; calls /api/generate-spec, reads the stream
+  SpecOutput.tsx        # Renders the generated spec, one-click copy
+  HistorySidebar.tsx    # localStorage-backed history (rename/delete/new)
 lib/
   anthropic.ts          # Anthropic SDK singleton client
+  prompts.ts            # System prompts (SPEC_SYSTEM_PROMPT)
+  types.ts              # Spec type shared client/server
+  history.ts            # localStorage history store
+  rateLimit.ts          # Per-IP rate limiting for the API route
 ```
 
 ## Key Behaviors
 
-- The single page collects the user's product idea via a textarea
-- The user selects which sections to include (all selected by default)
-- On submit, the frontend calls `POST /api/generate` with the idea text and selected sections
-- The API route sends both to Claude and returns a structured spec
+- The main app lives at `app/app/page.tsx` and collects the user's product idea via a textarea (max 2000 chars, matching the API limit)
+- The spec always has a **fixed set of 6 sections** — there is no section picker: `vision`, `users`, `features`, `flows`, `architecture`, `requirements`
+- On submit, `SpecForm` calls `POST /api/generate-spec` with body `{ description }`
+- The route sanitizes and length-checks the input (max 2000 chars), rate-limits per IP, then **streams** the model output back as newline-delimited JSON frames (`delta` / `done` / `error`); the HTTP status stays 200 and post-stream failures arrive as an `error` frame
+- The accumulated text is parsed and validated against the strict 6-section schema before it is shown as a finished spec — the streaming preview is never treated as the real output
 - The spec is displayed on the same page, ready to copy with one click
 - Login is required (Clerk) to reach the app; history persists client-side in localStorage
 
 ## Claude Integration
 
-Model: `claude-sonnet-4-6`. Client initialized in `lib/anthropic.ts` and imported into `app/api/generate/route.ts`. Use prompt caching where possible to reduce latency and cost on repeated base prompts.
+Model: `claude-sonnet-4-6`. Client initialized in `lib/anthropic.ts` and imported into `app/api/generate-spec/route.ts`, which uses `anthropic.messages.stream(...)` with `SPEC_SYSTEM_PROMPT` from `lib/prompts.ts`. Prompt caching is not yet applied — adding a `cache_control` breakpoint on the (stable) system prompt is a pending optimization to reduce latency and cost on repeated base prompts.
 
 ## Environment Variables
 
